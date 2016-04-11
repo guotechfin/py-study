@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>登录用户查询系统</title>
+    <meta name="renderer" content="webkit">
+    <!-- No Baidu Siteapp-->
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="icon" href="/static/favicon.png" mce_href="/favicon.ico" type="image/x-icon">  
+    <link rel="stylesheet" href="/static/bootstrap.min.css">
+    <script src="/static/jquery.min.js"></script>
+</head>
+<body>
+<div class="login-box" style="margin: 120px auto auto; font-family: 'Microsoft Yahei', Arial, sans-serif; width: 350px; border: 1px solid lightgray; border-radius: 10px; padding: 10px 30px 20px 30px;">
+    <form action="/user_profile/v1/token/login" method="post">
+        <p>
+            <span class="en" 
+            style="color: #0196e0; font-size: 30px; font-weight: bold; font-family: 'Cooper Black', Aharoni, sans-serif;">
+            用户查询系统
+            </span>
+        </p>
+        <div class="input-group" style="margin-bottom: 10px; margin-top: 20px">
+            <input id="loginUsername" name="user_name" type="text" style="width: 330px"
+                class="form-control" placeholder="email" aria-describedby="user_name">
+        </div>
+        <div class="input-group" style="margin-bottom: 10px;">
+            <input id="loginPassword" name="password" type="password"  style="width: 330px"
+                class="form-control" placeholder="密码" aria-describedby="password">
+        </div>
+        <div>
+            <p id="login-page-tooltip">{{msg}}</p>
+        </div>
+        <div>
+            <button type="submit" id="login-submit-btn" class="btn btn-primary" style="width: 100%; margin-top: 10px;">登录</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

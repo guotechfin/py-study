@@ -1,0 +1,753 @@
+<html>
+<head lang="zh-cn">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>用户信息查询系统</title>
+    <meta name="renderer" content="webkit">
+    <!-- No Baidu Siteapp-->
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="icon" href="/static/favicon.png" mce_href="/favicon.ico" type="image/x-icon">  
+    <style  type="text/css">
+    .section-table {
+        position: relative;
+        display: none;
+    }
+    .section-table .basic-info {
+        padding-top: 10px;
+        padding-left: 12px;
+        background-color: #fbfbfb;
+        border: 1px solid #e7e7e7;
+        border-radius: 2px;
+        line-height: 43px;
+    }
+    .section-table .basic-info .title {
+        display: inline-block;
+        width: 80px;
+        font-weight: bold;
+    }
+    .section-table .basic-info .multiWrapper {
+        display: inline-block;
+        width: 300px;
+    }
+    .section-table .basic-info .content {
+        display: inline-block;
+        width: 300px;
+        color: #333333;
+    }
+    .section-table .basic-info .number {
+        position: absolute;
+        right: 20px;
+        top: 18px;
+        background-color: #e64d3d;
+        border-radius: 50%;
+        display: inline-block;
+        height: 15px;
+        width: 15px;
+        border: 1px solid #e42714;
+        color: white;
+        font-size: 8px;
+        line-height: 15px;
+        text-align: center;
+    }
+    .section-table .basic-info .line {
+        /*display: inline-block;*/
+        position: absolute;
+        left: 85px;
+        top: 40px;
+        width: 280px;
+        border-top: 1px solid #cbcbcb;
+        display: none;
+    }
+    .section-table .tag-info {
+        background-color: #fbfbfb;
+        border: 1px solid #e7e7e7;
+        border-radius: 2px;
+    }
+    .section-table .tag-info .line {
+        height: 53px;
+        line-height: 53px;
+        position: relative;
+        padding-left: 20px;
+        padding-right: 150px;
+        word-break: keep-all;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .section-table .tag-info .app {
+        border-bottom: 1px solid #efefef;
+    }
+    .section-table .tag-info .personality, .history-ssid {
+        background-color: white;
+        border-bottom: 1px solid #efefef;
+    }
+    .section-table .tag-info .category {
+        border-bottom: 1px solid #efefef;
+    }
+    .section-table .tag-info .home-address {
+        background-color: white;
+        border-bottom: 1px solid #efefef;
+    }
+    .section-table .tag-info .line .ellipsis-wrapper {
+        word-break: keep-all;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .section-table .tag-info .line .title {
+        font-weight: bold;
+        display: inline-block;
+        width: 90px;
+    }
+    .section-table .tag-info .line .more {
+        position: absolute;
+        right: 20px;
+        top: 0;
+        height: 89px;
+        cursor: pointer;
+        outline: none;
+    }
+    .section-chart {
+        margin-top: 24px;
+        display: none;
+    }
+    .section-chart .highlight, .section-table .highlight {
+        height: 36px;
+        background-image: linear-gradient( 90deg, rgb(242,243,244) 0%, rgb(249,249,249) 100%);
+        background-image: -moz-linear-gradient( 90deg, rgb(242,243,244) 0%, rgb(249,249,249) 100%);
+        background-image: -webkit-linear-gradient( 90deg, rgb(242,243,244) 0%, rgb(249,249,249) 100%);
+        background-image: -ms-linear-gradient( 90deg, rgb(242,243,244) 0%, rgb(249,249,249) 100%);
+        border: 1px solid #cfcfcf;
+        border-bottom: 1px solid #e7e7e7;
+        border-radius: 4px 4px 0 0;
+        color: #666666;
+        line-height: 36px;
+        padding-left: 16px;
+    }
+    .section-chart .main {
+        border: 1px solid #cfcfcf;
+        border-top: none;
+        padding: 20px 20px;
+    } 
+    .section-table .main {
+        border: 1px solid #cfcfcf;
+        border-top: none;
+    } 
+
+    #l-map{height:500px;width:100%;}
+    label{max-width: inherit}
+    </style>
+    <link rel="stylesheet" href="/static/bootstrap.min.css">
+    <script src="/static/jquery.min.js"></script>
+    <script src="/static/bootstrap.min.js"></script>
+    <script src="/static/highcharts.js"></script>
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=bVU2RzeGkfckI6ReZNjxkvZL&s=1"></script>
+</head>
+<body style="min-width: 800px">
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="col-lg-12">
+            <h1 class="page-header"><i class="fa fa-bar-chart"></i> 用户信息查询
+            
+                <div class="dropdown" style="float:right;margin-right: 200px;font-size: 14px;">
+                    <button  type="button" data-toggle="dropdown" 
+                        style="background: transparent;border: 0;outline: none;"
+                        aria-haspopup="true" aria-expanded="false">
+                        {{user_name}}
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" data-toggle="modal" data-target="#pwdModal">修改密码</a></li>
+                        <li><a href="/user_profile/v1/token/logout">退出登录</a></li>
+                    </ul>
+                </div>
+            </h1>
+        </div>
+        <div class="col-lg-12">
+            <div class="m-app-focused-list m-data-list p-sum-app">
+                <div class="list-header">
+                    <div class="dev-filter-wrapper">
+                        <form action="/user_profile/v1/profile/index.html" method="get" class="form-inline">
+                            <span class="glyphicon glyphicon-filter"></span> <label class="h4">条件过滤:</label>
+                            <select id="type" name="type" class="form-control">
+                                <option value="ukey">IMEI</option>
+                                <option value="phone">电话号码</option>
+                                <option value="mac">MAC</option>
+                            </select>
+                            <input type="text" class="form-control" id="content" 
+                                name="content" placeholder="请输入查询条件" 
+                                value="{{content}}" style="height: 30px">
+                            <input type="submit" value="查询" class="btn btn-success">
+                        </form>
+                    </div>
+                </div>
+                <div class="list-body">
+                    <div class="section-table">
+                        <div class="basic-info">
+                            <div>
+                                <span class="title">IMEI</span>
+                                <span class="content imeiContent"></span>
+                            </div>
+                            <div style="position: relative">
+                                <span class="title">电话号码</span>
+                                <span class="content phoneContent"></span>
+                            </div>
+                            <div>
+                                <span class="title">设备信息</span>
+                                <span class="content deviceInfoContent"></span>
+                            </div>
+                            <div>
+                                <span class="title">性别</span>
+                                <span class="content genderContent"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-table" style="margin-top: 24px">
+                        <div class="highlight">
+                            <p>其他信息</p>
+                        </div>
+                        <div class="tag-info main">
+                            <div class="line app">
+                                <p class="ellipsis-wrapper">
+                                    <span class="title">安装应用</span>
+                                    <span class="content"></span>
+                                </p>
+                                <a href="#" class="more" data-toggle="modal" data-target="#appModal">了解详情</a>
+                            </div>
+                            <div class="line personality">
+                                <p class="ellipsis-wrapper">
+                                    <span class="title">人群标签</span>
+                                    <span class="content"></span>
+                                </p>
+                                <a href="#" class="more" data-toggle="modal" data-target="#personalityModal">了解详情</a>
+                            </div>
+                            <div class="line category">
+                                <p class="ellipsis-wrapper">
+                                    <span class="title">一级标签</span>
+                                    <span class="content"></span>
+                                </p>
+                                <a class="more" data-toggle="modal" data-target="#categoryModal">了解详情</a>
+                            </div>
+                            <div class="line history-ssid">
+                                <p class="ellipsis-wrapper">
+                                    <span class="title">历史SSID</span>
+                                    <span class="content"></span>
+                                </p>
+                                <a class="more" data-toggle="modal" data-target="#homeAddressModal">了解详情</a>
+                            </div>
+                            <div class="line history-ip">
+                                <p class="ellipsis-wrapper">
+                                    <span class="title">历史IP</span>
+                                    <span class="content"></span>
+                                </p>
+                                <a class="more" data-toggle="modal" data-target="#workAddressModal">了解详情</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-table" style="margin-top: 24px">
+                        <div class="highlight">
+                            <p>位置信息</p>
+                        </div>
+                        <div class="tag-info main">
+                            <div class="line now-address">
+                                <p class="ellipsis-wrapper">
+                                    <span class="title">最新地址</span>
+                                    <span class="content"></span>
+                                </p>
+                            </div>
+                            <div class="line home-address">
+                                <p class="ellipsis-wrapper">
+                                    <span class="title">家庭地址</span>
+                                    <span class="content"></span>
+                                </p>
+                            </div>
+                            <div class="line work-address">
+                                <p class="ellipsis-wrapper">
+                                    <span class="title">工作地址</span>
+                                    <span class="content"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-chart">
+                        <div class="highlight">
+                            <p>地理位置</p>
+                        </div>
+                        <div class="main">
+                            <div id="geoChartWrapper"></div>
+                        </div>
+                    </div>
+
+                    <div id="l-map"></div> <!--百度地图-->
+
+
+                </div>
+            </div>
+                <div class="modal fade" id="appModal" role="dialog" style="display: none">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <p class="modal-title" style="font-weight: bold; font-size: 16px;">应用</p>
+                            </div>
+                            <div class="modal-body">
+                                <div class="appDetailWrapper" style="line-height: 2;"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="personalityModal" role="dialog" style="display: none">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <p class="modal-title" style="font-weight: bold; font-size: 16px;">人群标签</p>
+                            </div>
+                            <div class="modal-body">
+                                <div class="personalityDetailWrapper" style="line-height: 2;"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="categoryModal" role="dialog" style="display: none">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <p class="modal-title" style="font-weight: bold; font-size: 16px;">标签</p>
+                            </div>
+                            <div class="modal-body">
+                                <div class="categoryDetailWrapper"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="pwdModal" role="dialog" style="display: none">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <p class="modal-title" style="font-weight: bold; font-size: 16px;">修改密码</p>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/user_profile/v1/user/modify_password" method="post">
+                                    <div class="form-group">
+                                        <label for="user_name">用户名</label>
+                                        <input type="text" class="form-control" 
+                                        style="width: 100%; height: 25px" disabled="disabled" 
+                                        id="user_name" value="{{user_name}}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="old_pwd">旧密码</label>
+                                        <input type="password" class="form-control" 
+                                        style="width: 100%; height: 25px"
+                                            id="old_pwd" placeholder="旧密码">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="new_pwd">新密码</label>
+                                        <input type="password" class="form-control" 
+                                        style="width: 100%; height: 25px"
+                                            id="new_pwd" placeholder="新密码">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                <button type="button" class="btn btn-default" onclick="return modify_password()">提交</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+    
+
+<script>
+
+    $("#type").find("option[value='{{type}}']").attr("selected",true);
+    function modify_password(){
+        var d = JSON.stringify({
+                user_name: $("#user_name").val(),
+                old_pwd: $("#old_pwd").val(),
+                new_pwd: $("#new_pwd").val(),
+            });
+        $.ajax({
+            url: "/user_profile/v1/user/modify_password",
+            method: "POST",
+            data: "data=" + d,
+            type: "json",
+            success: function(ret){
+                var result = JSON.parse(ret);
+                if(result.ret == 0){
+                     alert("修改成功");
+                     $('#pwdModal').modal('hide');
+                }else{
+                     alert(result.msg);
+                }
+            }
+        })
+    }
+    var infoJsonData = "{{infoJson}}";
+    var geoJsonData = "{{geoJson}}";
+    if(infoJsonData !== ""){
+        $(".section-table").show();
+        var infoJson = JSON.parse(infoJsonData.replace(/&#34;/g,'"'));
+    }
+    if(geoJsonData !== ""){
+        $(".section-chart").show();
+        var geoJson = JSON.parse(geoJsonData.replace(/&#34;/g,'"'));
+    }
+
+    /**左侧基本信息表中数据加载**/
+    $(".basic-info .imeiContent").html(infoJson.imei);
+    if(infoJson.gender == "M"){
+        $(".basic-info .genderContent").html("男");
+    }else if(infoJson.gender == "F"){
+        $(".basic-info .genderContent").html("女");
+    }else{
+        $(".basic-info .genderContent").html(infoJson.gender);
+    }
+    $(".basic-info .deviceInfoContent").html(infoJson.device);
+    $(".basic-info .appkeyContent").html(infoJson.appkey[0].slice(0,24));
+    $(".basic-info .phoneContent").html(infoJson.phone[0]);
+    $(".basic-info .uidContent").html(infoJson.uid[0]);
+    $(".basic-info .line").hide();
+    function hoverMulti(numberEle, wrapperEle, length){
+        if(length>0){
+            $(numberEle).html(length);
+            $(wrapperEle).hover(function(){
+                $(this).attr("data-toggle", "modal");
+                $(this).find(".line").show();
+                $(this).find(".content").css({
+                    "color": "#b2b2b2",
+                    "cursor": "pointer"
+                });
+                $(this).find(".number").css({
+                    "background-color":"#f27d71",
+                    "border":"1px solid #eb685b"
+                })
+            }, function(){
+                $(this).find(".line").hide();
+                $(this).find(".content").css({
+                    "color": "#333333"
+                });
+                $(this).find(".number").css({
+                    "background-color":"#e64d3d",
+                    "border":"1px solid #e42714"
+                })
+            });
+        }else{
+            $(numberEle).hide();
+        }
+    }
+    hoverMulti(".appkeyNumber", ".multiAppkey", infoJson.appkey.length);
+    hoverMulti(".phoneNumber", ".multiPhone", infoJson.phone.length);
+    hoverMulti(".uidNumber", ".multiUid", infoJson.uid.length);
+
+
+
+    /**右侧标签表中数据加载**/
+    var appContent = infoJson.app.join(" | ");
+    var personalityContent = infoJson.usergroup;
+    var categoryContent = Object.keys(infoJson.category).join(" | ");
+    var homeAddressContent;
+    var homeAddressDetail;
+    var workAddressContent;
+    var workAddressDetail;
+    if (typeof(infoJson.homeaddr.town) == "undefined") {infoJson.homeaddr.town=''};
+    if (typeof(infoJson.homeaddr.village) == "undefined") {infoJson.homeaddr.village=''};
+    if (typeof(infoJson.workaddr.town) == "undefined") {infoJson.workaddr.town=''};
+    if (typeof(infoJson.workaddr.village) == "undefined") {infoJson.workaddr.village=''};
+    if(infoJson.homeaddr == "-"){
+        homeAddressContent = '-';
+        homeAddressDetail = '-';
+    }else{
+        homeAddressContent = infoJson.homeaddr.country+infoJson.homeaddr.province+infoJson.homeaddr.city+infoJson.homeaddr.district;
+        homeAddressDetail = homeAddressContent+infoJson.homeaddr.town+infoJson.homeaddr.village+infoJson.homeaddr.road;
+    }
+    if(infoJson.workaddr == "-"){
+        workAddressContent = '-';
+        workAddressDetail = '-';
+    }else{
+        workAddressContent = infoJson.workaddr.country+infoJson.workaddr.province+infoJson.workaddr.city+infoJson.workaddr.district;
+        workAddressDetail = workAddressContent+infoJson.workaddr.town+infoJson.workaddr.village+infoJson.workaddr.road;
+    }
+
+    $(".tag-info .app .content").html(appContent);
+    $(".tag-info .personality .content").html(personalityContent);
+    $(".tag-info .category .content").html(categoryContent);
+    $(".tag-info .home-address .content").html(homeAddressDetail);
+    $(".tag-info .work-address .content").html(workAddressDetail);
+    /*模态框*/
+    $(".appDetailWrapper").html(appContent);
+    $(".personalityDetailWrapper").html(personalityContent);
+    $(".homeAddressDetailWrapper").html(homeAddressDetail);
+    $(".workAddressDetailWrapper").html(workAddressDetail);
+
+    /**geo图表数据处理**/
+    function sortByAmount(array, key) {
+        return array.sort(function(a, b) {
+            var x = a[key]; var y = b[key];
+            return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+        });
+    }
+    geoJson = sortByAmount(geoJson, "date");
+    var date=[], longitude=[], latitude=[], province=[], city=[], district=[], town=[], village=[], road=[], country=[];
+    function cutJson(data){
+        for(var i=0; i<data.length; i++){
+            date.push(data[i]["date"]);
+            country.push(data[i]["country"]);
+            longitude.push(parseFloat(data[i]["longitude"]));
+            latitude.push(parseFloat(data[i]["latitude"]));
+            province.push(data[i]["province"]);
+            city.push(data[i]["city"]);
+            district.push(data[i]["district"]);
+            if (typeof(data[i]["town"]) == "undefined") {data[i]["town"]=''};
+            town.push(data[i]["town"]);
+            if (typeof(data[i]["village"]) == "undefined") {data[i]["village"]=''};
+            village.push(data[i]["village"]);
+            road.push(data[i]["road"]);
+        }
+        return[date, longitude, latitude, province, city, district, town, village, road];
+    }
+    var dataArray = cutJson(geoJson);
+    date = dataArray[0];
+    longitude = dataArray[1];
+    latitude = dataArray[2];
+    province = dataArray[3];
+    city = dataArray[4];
+    district = dataArray[5];
+    town = dataArray[6];
+    village = dataArray[7];
+    road = dataArray[8];
+
+    var now_address = "-";
+    if(date.length != 0){
+        now_address = country[country.length-1] + province[province.length-1] + city[city.length-1] + district[district.length-1];
+        now_address += town[town.length-1] + village[village.length-1] + road[road.length-1];
+        now_address += "(" + date[date.length-1] + ")";
+    }
+    $(".now-address .content").html(now_address);
+
+
+    /**geo图表数据加载**/
+    createChartGeo();
+    function createChartGeo(){
+        Highcharts.setOptions({
+            chart: {
+                style: {
+                    fontFamily: 'Microsoft YaHei'
+                },
+                type: 'spline'
+            }
+        });
+
+        $('#geoChartWrapper').highcharts({
+            chart: {
+                height: 350
+            },
+            title: {
+                text: null
+//                align: 'center',
+//                style: {
+//                    color: "#4f9fdb",
+//                    fontWeight: "bold",
+//                    fontSize: 18
+//                }
+            },
+            xAxis: {
+                categories: date,
+                labels: {
+                    enabled: false
+                }
+            },
+            yAxis: {
+                title: {
+                    text: '纬度'
+                },
+//                plotLines: [{
+//                    value: 0,
+//                    width: 1,
+//                    color: '#808080'
+//                }],
+                floor: 0,
+                labels: {
+                    formatter: function () {
+                        return (this.value).toFixed(3);
+                    }
+                },
+                gridLineColor: '#ededed'
+            },
+            plotOptions: {
+                spline: {
+                    dataLabels: {
+                        enabled: true,
+                        formatter: function () {
+                            var index = this.series.data.indexOf( this.point );
+                            return city[index]+'<br/>'+district[index];
+                        },
+                        style: {
+                            "color": "#898989",
+                            "textShadow": "0 0",
+                            "fontWeight":"100"
+                        }
+                    }
+                },
+                series: {
+                    lineWidth: 1.5,
+                    marker: {
+                        symbol: 'circle',
+                        fillColor: '#78a2d9',
+                        lineWidth: 2,
+                        lineColor: null, // inherit from series
+                        radius: 2
+                    }
+                }
+            },
+            tooltip: {
+                formatter: function () {
+                    var index = this.series.data.indexOf( this.point );
+                    return '<b>时间：</b>'+this.x + '<br/><b>省份：</b>'+province[index]+'<br/><b>市县：</b>'+city[index]+' '+district[index]+'<br/><b>街道：</b>'+town[index]+' '+village[index]+' '+road[index];
+                }
+            },
+            legend: {
+                enabled: false
+//                layout: 'horizontal',
+//                align: 'right',
+//                verticalAlign: 'top',
+//                borderWidth: 0,
+//                floating: true
+            },
+            series: [{
+                name: '纬度',
+                data: latitude,
+                color: '#78a2d9'
+            }],
+            credits: {
+                enabled: false
+            }
+        });
+    }
+
+    /**一级、二级标签弹窗表格生成**/
+    createCategoryModalTable();
+    function createCategoryModalTable(){
+        /*把tag拆成key和value的两个数组*/
+        var categoryKeyArray = Object.keys(infoJson.category);
+        var categoryValueArray = [];
+        for(var o in infoJson.category) {
+            categoryValueArray.push(infoJson.category[o]);
+        }
+
+        var htmls = [];
+        htmls.push('<table style="table-layout: fixed; width: 100%; line-height: 35px;">');
+        for(var i=0; i<categoryKeyArray.length; i++){
+            var content = categoryValueArray[i];
+            htmls.push('<tr>');
+            htmls.push('<td style="width: 80px; color: #3f7ab0;">'+categoryKeyArray[i]+'：'+'</td>');
+            htmls.push('<td style="color: #8c8c8c;">'+content+'</td>');
+            htmls.push('</tr>');
+        }
+        htmls.push('</table>');
+        $(".categoryDetailWrapper").html(htmls.join(''));
+    }
+
+    createAppkeyModalTable();
+    function createAppkeyModalTable(){
+        var htmls = [];
+        for(var i =0; i<infoJson.appkey.length; i++){
+            htmls.push('<p style="display: inline-block; width: 100%;">'+infoJson.appkey[i]+'</p>');
+        }
+        $(".appkeyDetailWrapper").html(htmls.join(''));
+    }
+
+    createPhoneModalTable();
+    function createPhoneModalTable(){
+        var htmls = [];
+        for(var i =0; i<infoJson.phone.length; i++){
+            htmls.push('<p style="display: inline-block; width: 45%;">'+infoJson.phone[i]+'</p>');
+        }
+        $(".phoneDetailWrapper").html(htmls.join(''));
+    }
+
+    createUidModalTable();
+    function createUidModalTable(){
+        var htmls = [];
+        for(var i =0; i<infoJson.uid.length; i++){
+            htmls.push('<p style="display: inline-block; width: 45%;">'+infoJson.uid[i]+'</p>');
+        }
+        $(".uidDetailWrapper").html(htmls.join(''));
+    }
+
+
+    /**百度地图数据处理**/
+    var geoArray = [];
+    for(var j=0; j<longitude.length; j++){
+        var point = new BMap.Point(longitude[j],latitude[j]);
+        geoArray.push(point);
+    }
+
+    /**百度地图API功能**/
+    var map = new BMap.Map("l-map");
+    map.centerAndZoom(new BMap.Point(longitude[0],latitude[0]),10);
+    map.enableScrollWheelZoom(true);
+    var index = 0;
+    var myGeo = new BMap.Geocoder();
+
+    var adds = geoArray;
+
+    for(var i = 0; i<adds.length; i++){
+        var marker = new BMap.Marker(adds[i]);
+        map.addOverlay(marker);
+        marker.setLabel(new BMap.Label(date[i],{offset:new BMap.Size(20,-10)}));
+    }
+    function bdGEO(){
+        var pt = adds[index];
+        geocodeSearch(pt);
+        index++;
+    }
+    function geocodeSearch(pt){
+        if(index < adds.length-1){
+            setTimeout(window.bdGEO,400);
+        }
+        myGeo.getLocation(pt, function(rs){
+            var addComp = rs.addressComponents;
+            document.getElementById("result").innerHTML += index + ". " +adds[index-1].lng + "," + adds[index-1].lat + "："  + "商圈(" + rs.business + ")  结构化数据(" + addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber + ")<br/><br/>";
+        });
+    }
+
+    /*地理位置信息空值判断*/
+    if(geoJson.length<1){
+        $("#geoChartWrapper").html("没有数据");
+        $("#l-map").remove();
+    }
+</script>
+</script>
+
+
+</boby>
+</html>
