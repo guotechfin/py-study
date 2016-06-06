@@ -57,4 +57,4 @@ else:
     engine = create_engine(
             connect_sql,
             encoding='utf-8')
-DBSession = sessionmaker(bind=engine)
+DBSession = sessionmaker(bind=engine, expire_on_commit=False)

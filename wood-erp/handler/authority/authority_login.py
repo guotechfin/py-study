@@ -26,6 +26,7 @@ class AuthorityLogin(web_handler.WebHandler):
         input = json.loads(self.request.body)
         self.user_name = input.get("user_name", "")
         self.pwd = input.get("pwd", "").upper()
+        self.verify_content = input.get("verify_content", "").upper()
 
     def check_params(self):
         if (self.user_name == "" or self.pwd == ""):
@@ -33,6 +34,8 @@ class AuthorityLogin(web_handler.WebHandler):
             return False
         if not re.match('^[0-9a-zA-Z]+$', str(self.user_name)):
             self.ret, self.msg = 1, error_msg.USER_NAME_ERROR
+            return False
+        if not self.verify_content:
             return False
         return True
 
@@ -49,9 +52,18 @@ class AuthorityLogin(web_handler.WebHandler):
     @tornado.web.asynchronous
     def post(self):
         if not self.check_params():
+            self.ret = 1
+            self.msg = error_msg.PARAMS_ERROR
+            return self.response()
+        cookie_verify_content = self.get_secure_cookie(
+                '%s_verify_id' % conf.service_name).upper()
+        if cookie_verify_content != self.verify_content:
+            self.ret = 1
+            self.msg = error_msg.VERIFY_CODE_ERROR
             return self.response()
         user = user_obj.check_pwd(
                 self._db_session, self.user_name, self.pwd)
+        self._db_session.commit()
         if user != None:
             token_id = utility.create_token(user.id)
             mylog.logger.debug("%s create token_id: %s" % 

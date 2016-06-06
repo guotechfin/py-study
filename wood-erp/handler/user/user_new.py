@@ -52,6 +52,7 @@ class UserNew(web_handler.WebHandler):
 
     @tornado.gen.coroutine
     @tornado.web.asynchronous
+    @utility.login_requested
     def post(self):
         if not self.check_params():
             return self.response()

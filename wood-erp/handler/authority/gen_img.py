@@ -4,7 +4,8 @@
 import random
 import Image, ImageDraw, ImageFont, ImageFilter
 
-_letter_cases = "abcdefghjkmnpqrstuvwxy" # 小写字母，去除可能干扰的i，l，o，z
+# 小写字母，去除可能干扰的i，l，o，z
+_letter_cases = "abcdefghjkmnpqrstuvwxy" 
 _upper_cases = _letter_cases.upper() # 大写字母
 _numbers = ''.join(map(str, range(3, 10))) # 数字
 init_chars = ''.join((_letter_cases, _upper_cases, _numbers))
@@ -46,4 +47,5 @@ def create_points(draw, point_chance, width, height):
 
 
 if __name__ == "__main__":
-    gen_img("/tmp/test_gen_img.jpg", ("Tel:18575532201", "Email:baiheng.2011@gmail.com"))
+    gen_img("/tmp/test_gen_img.jpg",
+            ("Tel:18575532201", "Email:baiheng.2011@gmail.com"))

@@ -43,8 +43,9 @@ class UserList(web_handler.WebHandler):
 
     @tornado.gen.coroutine
     @tornado.web.asynchronous
-    #@utility.login_requested
+    @utility.login_requested
     def get(self):
         self.user_list, self.total = user_obj.get_user_list(
                self._db_session, self.start, self.end)
+        self._db_session.commit()
         return self.response()
