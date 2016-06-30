@@ -4,15 +4,15 @@ import os
 
 
 # 项目名
-service_name = "template-user"
+SERVICE_NAME = "template-user"
 
 # 是否调试
 debug = True
 
 # mysql user
-mysql_user = "%s" % service_name
-mysql_pwd = "123456"
-mysql_db = "%s_db" % service_name
+MYSQL_USER = "%s" % SERVICE_NAME
+MYSQL_PWD = "123456"
+MYSQL_DB = "%s_db" % SERVICE_NAME
 
 # 私钥
 PRIVATE_KEY = "8434567812345678"

@@ -18,7 +18,7 @@ from common import utility
 import gen_img
 
 
-class AuthorityVerifyCode(web_handler.WebHandler):
+class AuthenticationVerifyCode(web_handler.WebHandler):
     def get(self):
         verify_content = ""
         for i in xrange(0, 4):
@@ -26,7 +26,7 @@ class AuthorityVerifyCode(web_handler.WebHandler):
                     "%s" % gen_img.init_chars[
                         random.randint(
                             0, gen_img.init_chars_len-1)])
-        self.set_secure_cookie('%s_verify_id' % conf.service_name, 
+        self.set_secure_cookie('%s_verify_id' % conf.SERVICE_NAME, 
                 str(verify_content))
         data = gen_img.gen_img(verify_content)
         mylog.logger.debug("gen verify_content: %s" % verify_content)

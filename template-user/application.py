@@ -10,7 +10,7 @@ from handler.user.url import user_url
 from handler.authority.url import authority_url
 
 setting = dict(
-    static_url_prefix = "/%s/static/" % conf.service_name, 
+    static_url_prefix = "/%s/static/" % conf.SERVICE_NAME, 
     template_path = os.path.join(os.path.dirname(__file__),"template"),
     static_path = os.path.join(os.path.dirname(__file__), "static"),
     autoreload = True,

@@ -55,6 +55,7 @@ class UserModify(web_handler.WebHandler):
     @tornado.gen.coroutine
     @tornado.web.asynchronous
     @utility.login_requested
+    @utility.check_right(conf.AUTHORIZATION[3][0][2][0])
     def post(self):
         if not self.check_params():
             return self.response()
@@ -70,7 +71,7 @@ class UserModify(web_handler.WebHandler):
                     )
             self._db_session.commit()
         except Exception as e:
-            mylog.logger.error("new_user error %s" % e)
+            mylog.logger.error("modify_user error %s" % e)
             self.ret = 1
             self.msg = error_msg.NEW_USER_NAME_ERROR
             self._db_session.rollback()

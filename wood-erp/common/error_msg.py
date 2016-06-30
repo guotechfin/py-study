@@ -10,5 +10,8 @@ USER_NAME_ERROR = u"用户名非法"
 ACCOUNT_PWD_ERROR = u"账号或者密码错误"
 TOKEN_TIMEOUT_ERROR = u"过期登录"
 VERIFY_CODE_ERROR = u"验证码错误"
+CHECKED_ERROR = u"审核通过不能修改,删除"
+AUTHORIZATION_ERROR = u"权限不足"
+
 
 FORBIDDEN_ERROR = u"禁止登陆用户"

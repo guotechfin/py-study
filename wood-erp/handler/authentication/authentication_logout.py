@@ -15,7 +15,7 @@ from common import conf
 from common import utility
 
 
-class AuthorityLogout(web_handler.WebHandler):
+class AuthenticationLogout(web_handler.WebHandler):
     def prepare(self):
         self.resp_json = ""
         self.ret = 0
@@ -33,5 +33,5 @@ class AuthorityLogout(web_handler.WebHandler):
     @tornado.gen.coroutine
     @tornado.web.asynchronous
     def get(self):
-        self.clear_cookie("%s_token_id" % conf.service_name)
+        self.clear_cookie("%s_token_id" % conf.SERVICE_NAME)
         return self.response()

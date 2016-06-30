@@ -7,10 +7,10 @@ from authority_verify_code import AuthorityVerifyCode
 from common import conf
 
 authority_url = [
-        ("/%s/authority/login" % conf.service_name,
+        ("/%s/authority/login" % conf.SERVICE_NAME,
             AuthorityLogin),
-        ("/%s/authority/logout" % conf.service_name,
+        ("/%s/authority/logout" % conf.SERVICE_NAME,
             AuthorityLogout),
-        ("/%s/authority/verify_code" % conf.service_name,
+        ("/%s/authority/verify_code" % conf.SERVICE_NAME,
             AuthorityVerifyCode),
         ]

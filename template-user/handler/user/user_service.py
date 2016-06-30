@@ -28,11 +28,11 @@ class UserService(object):
             pwd="",
             phone="",
             email=""):
-        user = User(user_name=user_name,
-                real_name=real_name,
+        user = User(user_name=user_name.strip(),
+                real_name=real_name.strip(),
                 pwd=utility.make_pwd(pwd),
-                phone=phone,
-                email=email)
+                phone=phone.strip(),
+                email=email.strip())
         session.add(user)
 
     def modify_user(
@@ -46,10 +46,10 @@ class UserService(object):
             email="",
             flag=0):
         data = dict()
-        data['user_name'] = str(user_name).strip()
-        data['real_name'] = str(real_name).strip()
-        data['phone'] = str(phone).strip()
-        data['email'] = str(email).strip()
+        data['user_name'] = user_name.strip()
+        data['real_name'] = real_name.strip()
+        data['phone'] = phone.strip()
+        data['email'] = email.strip()
         data['flag'] = flag
         if pwd:
             data['pwd'] = utility.make_pwd(pwd)

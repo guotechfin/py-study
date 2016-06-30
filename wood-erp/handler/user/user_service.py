@@ -6,17 +6,21 @@ from user_model import User
 from common import utility
 
 class UserService(object):
-    def get_user_list(
+    def search_user_list(
             self,
             session,
+            user_id=-1,
             start=-1,
             end=-1,
             flag=0):
         user = session.query(User)
+        if user_id != -1:
+            user = user.filter_by(id=user_id)
+        if flag != -1:
+            user = user.filter_by(flag=flag)
         if start == -1 and end == -1:
             return user.all()
         else:
-            user = user.filter_by(flag=flag)
             user_list = user[start:end]
             return user_list, user.count()
 
@@ -28,11 +32,11 @@ class UserService(object):
             pwd="",
             phone="",
             email=""):
-        user = User(user_name=user_name,
-                real_name=real_name,
+        user = User(user_name=user_name.strip(),
+                real_name=real_name.strip(),
                 pwd=utility.make_pwd(pwd),
-                phone=phone,
-                email=email)
+                phone=phone.strip(),
+                email=email.strip())
         session.add(user)
 
     def modify_user(
@@ -46,10 +50,10 @@ class UserService(object):
             email="",
             flag=0):
         data = dict()
-        data['user_name'] = str(user_name).strip()
-        data['real_name'] = str(real_name).strip()
-        data['phone'] = str(phone).strip()
-        data['email'] = str(email).strip()
+        data['user_name'] = user_name.strip()
+        data['real_name'] = real_name.strip()
+        data['phone'] = phone.strip()
+        data['email'] = email.strip()
         data['flag'] = flag
         if pwd:
             data['pwd'] = utility.make_pwd(pwd)

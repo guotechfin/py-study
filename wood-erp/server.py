@@ -7,7 +7,6 @@ import tornado.httpserver
 from tornado.options import define, options
 
 from application import application
-from common import create_table, drop_table
 from common import conf
 
 define("port", default=8083, help="run on th given port", type=int)
@@ -23,6 +22,4 @@ def main():
 
 
 if __name__=="__main__":
-    if conf.debug:
-        create_table()
     main()

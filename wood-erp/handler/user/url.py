@@ -6,8 +6,8 @@ from user_modify import UserModify
 from user_new import UserNew
 from common import conf
 
-user_url = [
-        ("/%s/user/list" % conf.service_name, UserList),
-        ("/%s/user/new" % conf.service_name, UserNew),
-        ("/%s/user/modify" % conf.service_name, UserModify),
+url = [
+        ("/%s/user/list" % conf.SERVICE_NAME, UserList),
+        ("/%s/user/new" % conf.SERVICE_NAME, UserNew),
+        ("/%s/user/modify" % conf.SERVICE_NAME, UserModify),
         ]

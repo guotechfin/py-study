@@ -18,13 +18,13 @@ class WebHandler(tornado.web.RequestHandler):
         # 每个请求有一个
         self._db_session = DBSession()
         self._user_id = self.get_secure_cookie(
-                '%s_user_id' % conf.service_name)
+                '%s_user_id' % conf.SERVICE_NAME)
         self._user_name = self.get_secure_cookie(
-                '%s_user_name' % conf.service_name)
+                '%s_user_name' % conf.SERVICE_NAME)
         self._real_name = self.get_secure_cookie(
-                '%s_real_name' % conf.service_name)
+                '%s_real_name' % conf.SERVICE_NAME)
         self._token_id = self.get_secure_cookie(
-                '%s_token_id' % conf.service_name)
+                '%s_token_id' % conf.SERVICE_NAME)
         mylog.logger.debug("%s, ip: %s, query input: %s, body: %s,"
                 "cookie: uid: %s, user_name: %s, "
                 "real_name: %s, token_id: %s" %

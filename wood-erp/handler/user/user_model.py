@@ -6,7 +6,8 @@ from sqlalchemy import Column, DateTime, String, text
 from sqlalchemy.dialects.mysql import INTEGER,\
         TIMESTAMP, TINYINT, FLOAT, DOUBLE
 
-from common import Base
+from common import Base, create_table
+from common import conf
 
 class User(Base):
     __tablename__ = 'user'
@@ -20,3 +21,6 @@ class User(Base):
     # 0 在职
     # 1 离职
     flag = Column(INTEGER, nullable=False, server_default='0')
+
+if conf.DEBUG:
+    create_table("user")

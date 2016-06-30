@@ -17,7 +17,7 @@ from common import utility
 from handler.user.user_service import user_obj
 
 
-class AuthorityLogin(web_handler.WebHandler):
+class AuthenticationLogin(web_handler.WebHandler):
     def prepare(self):
         self.resp_json = ""
         self.ret = 0
@@ -36,6 +36,7 @@ class AuthorityLogin(web_handler.WebHandler):
             self.ret, self.msg = 1, error_msg.USER_NAME_ERROR
             return False
         if not self.verify_content:
+            self.ret, self.msg = 1, error_msg.PARAMS_ERROR
             return False
         return True
 
@@ -53,10 +54,9 @@ class AuthorityLogin(web_handler.WebHandler):
     def post(self):
         if not self.check_params():
             self.ret = 1
-            self.msg = error_msg.PARAMS_ERROR
             return self.response()
         cookie_verify_content = self.get_secure_cookie(
-                '%s_verify_id' % conf.service_name).upper()
+                '%s_verify_id' % conf.SERVICE_NAME).upper()
         if cookie_verify_content != self.verify_content:
             self.ret = 1
             self.msg = error_msg.VERIFY_CODE_ERROR
@@ -68,15 +68,15 @@ class AuthorityLogin(web_handler.WebHandler):
             token_id = utility.create_token(user.id)
             mylog.logger.debug("%s create token_id: %s" % 
                     (user.id, token_id))
-            self.set_secure_cookie('%s_token_id' % conf.service_name, 
+            self.set_secure_cookie('%s_token_id' % conf.SERVICE_NAME, 
                     str(token_id))
-            self.set_secure_cookie('%s_user_id' % conf.service_name, 
+            self.set_secure_cookie('%s_user_id' % conf.SERVICE_NAME, 
                     str(user.id),
                     expires_days=conf.TOKEN_TIMEOUT)
-            self.set_secure_cookie('%s_user_name' % conf.service_name, 
+            self.set_secure_cookie('%s_user_name' % conf.SERVICE_NAME, 
                     str(user.user_name),
                     expires_days=conf.TOKEN_TIMEOUT)
-            self.set_secure_cookie('%s_real_name' % conf.service_name, 
+            self.set_secure_cookie('%s_real_name' % conf.SERVICE_NAME, 
                     str(user.real_name),
                     expires_days=conf.TOKEN_TIMEOUT)
         else:

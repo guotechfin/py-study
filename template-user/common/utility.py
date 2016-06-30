@@ -39,7 +39,7 @@ def create_token(user_id):
     plain_token = ("%s_%s_%s" %
             (int(time.time()),
                 user_id,
-                conf.service_name))
+                conf.SERVICE_NAME))
     return Encrypt(plain_token)
 
 def check_token(user_id, token):

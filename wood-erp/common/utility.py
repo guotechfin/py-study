@@ -8,10 +8,13 @@ from M2Crypto.EVP import Cipher
 import base64
 import json
 from sqlalchemy.ext.declarative import DeclarativeMeta
+from decimal import Decimal
 
 from common import mylog
 from common import conf
 from common import error_msg
+
+from handler.authorization.authorization_service import authorization_obj
 
 
 def login_requested(func):
@@ -24,6 +27,20 @@ def login_requested(func):
             self.msg = error_msg.TOKEN_TIMEOUT_ERROR
             return self.response()
     return _login_requested
+
+def check_right(right_id):
+    def _check_right(func):
+        def __check_right(*args, **kwargs):
+            self = args[0]
+            if authorization_obj.check_authorization(
+                    self._db_session, self._user_id, right_id):
+                return func(*args, **kwargs)
+            else:
+                self.ret = 3
+                self.msg = error_msg.AUTHORIZATION_ERROR
+                return self.response()
+        return __check_right
+    return _check_right
 
 def make_pwd(pwd):
     return mmhash.get_unsigned_hash(pwd)
@@ -39,7 +56,7 @@ def create_token(user_id):
     plain_token = ("%s_%s_%s" %
             (int(time.time()),
                 user_id,
-                conf.service_name))
+                conf.SERVICE_NAME))
     return Encrypt(plain_token)
 
 def check_token(user_id, token):
@@ -104,6 +121,8 @@ def to_obj(orm_obj, without_fields=[]):
             elif isinstance(data, datetime.timedelta):
                 fields[field] = ((datetime.datetime.min + data).time().
                         strftime("%Y-%m-%d %H:%M:%S"))
+            elif isinstance(data, Decimal):
+                fields[field] = float(data)
             else:
                 fields[field] = data
         return fields

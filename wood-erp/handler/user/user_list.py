@@ -44,8 +44,11 @@ class UserList(web_handler.WebHandler):
     @tornado.gen.coroutine
     @tornado.web.asynchronous
     @utility.login_requested
+    @utility.check_right(conf.AUTHORIZATION[3][0][0][0])
     def get(self):
-        self.user_list, self.total = user_obj.get_user_list(
-               self._db_session, self.start, self.end)
+        self.user_list, self.total = user_obj.search_user_list(
+               self._db_session,
+               start=self.start,
+               end=self.end)
         self._db_session.commit()
         return self.response()
