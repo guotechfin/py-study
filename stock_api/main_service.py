@@ -7,6 +7,7 @@ monkey.patch_socket()
 
 
 from service.sina_stock_service import sina_obj
+from service.leverfun_service import leverfun_obj
 from apscheduler.schedulers.blocking import BlockingScheduler
 from common import mylog
 from common import conf
@@ -15,19 +16,43 @@ import signal
 
 
 
-def track_job():
+def sina_track_job():
     def task(code):
-        ticket = sina_obj.get_stock_real_time_info(code)
-        if ticket and ticket.large_volumns():
-            print ticket
+        ticket_list = sina_obj.get_stock_real_time_info(code)
+        for i in ticket_list:
+            if i.show():
+                print i
     t = time.time()
-    threads = [gevent.spawn(task, i) for i in conf.TICKET_LIST]
+    threads = list()
+    size = len(conf.TICKET_LIST)/conf.QUERY_NUM
+    for i in xrange(0, size):
+        start = i*conf.QUERY_NUM
+        if i == size:
+            end = len(conf.TICKET_LIST)
+        else:
+            end = start + conf.QUERY_NUM
+        threads.append(gevent.spawn(task, conf.TICKET_LIST[start:end]))
     gevent.joinall(threads)
     print time.time() - t
+
+
+def leverfun_track_job():
+    def task(code):
+        ticket = leverfun_obj.get_stock_real_time_info(code)
+        if ticket.show():
+            print ticket
+    t = time.time()
+    threads = list()
+    for i in conf.TICKET_LIST:
+        task(i)
+    print time.time() - t
+        
+
 
 if __name__ == "__main__":
     gevent.signal(signal.SIGQUIT, gevent.kill)
     sched = BlockingScheduler()
-    #sched.add_job(track_job, 'interval', seconds=2)
+    #sched.add_job(sina_track_job, 'interval', seconds=2)
     #sched.start()
-    track_job()
+    sina_track_job()
+    #leverfun_track_job()

@@ -12,7 +12,12 @@ class Ticket(object):
         self.name = ""
         self.code = ""
         self.time = ""
+        self.change_rate = 0
+        # 当前成交金额 单位W
+        self.transacation_amount = 0
+        # 当前成交量 单位手
         self.volume = 0
+        # 当前成交价
         self.price = 0
         # 买1 量
         self.b1_v = 0
@@ -69,7 +74,7 @@ class Ticket(object):
                     u"卖2：%s %s\n"
                     u"卖1：%s %s\n"
                     u"----------\n"
-                    u"成交：%s %s %s\n"
+                    u"成交：%s %s %s %s%%\n"
                     u"----------\n"
                     u"买1：%s %s\n"
                     u"买2：%s %s\n"
@@ -81,7 +86,7 @@ class Ticket(object):
                         self.a3_p, self.a3_v/100,
                         self.a2_p, self.a2_v/100,
                         self.a1_p, self.a1_v/100,
-                        self.time, self.code, self.name,
+                        self.time, self.code, self.name, self.change_rate*100,
                         self.b1_p, self.b1_v/100,
                         self.b2_p, self.b2_v/100,
                         self.b3_p, self.b3_v/100,
@@ -100,7 +105,7 @@ class Ticket(object):
                     u"卖2：%s %s\n"
                     u"卖1：%s %s\n"
                     u"----------\n"
-                    u"成交：%s %s %s\n"
+                    u"成交：%s %s %s %s%%\n"
                     u"----------\n"
                     u"买1：%s %s\n"
                     u"买2：%s %s\n"
@@ -122,7 +127,7 @@ class Ticket(object):
                         self.a3_p, self.a3_v,
                         self.a2_p, self.a2_v,
                         self.a1_p, self.a1_v,
-                        self.time, self.code, self.name,
+                        self.time, self.code, self.name, self.change_rate*100,
                         self.b1_p, self.b1_v,
                         self.b2_p, self.b2_v,
                         self.b3_p, self.b3_v,

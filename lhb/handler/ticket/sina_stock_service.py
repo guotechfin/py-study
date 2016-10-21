@@ -2,12 +2,19 @@
 # -*- coding:utf8 -*-
 
 
-import requests
-from model.ticket import Ticket
+import tornado.gen
+import tornado.httpclient
+
+from ticket_model import Ticket
 
 
 class SinaApi(object):
+    @tornado.gen.coroutine
     def get_stock_real_time_info(self, code_list):
+        single = False
+        if not isinstance(code_list, list):
+            single = True
+            code_list = [code_list]
         code_name_list = list()
         ticket_list = list()
         for code in code_list:
@@ -16,15 +23,19 @@ class SinaApi(object):
             else:
                 code_prefix = 'sz'
             code_name_list.append("%s%s" % (code_prefix, code))
+        http_client = tornado.httpclient.AsyncHTTPClient()
         try:
-            resp = requests.get("http://hq.sinajs.cn/list=%s" %
-                    (",".join(code_name_list)), timeout=2)
-            resp = resp.text.strip()
+            url = "http://hq.sinajs.cn/list=%s" % (",".join(code_name_list))
+            response = yield http_client.fetch(url)
+            resp = response.body.strip().decode('gbk')
             for i in resp.split('\n'):
                 ticket_list.append(self.create_ticket(i.strip()))
         except Exception as e:
             print e
-        return ticket_list
+        if single:
+            raise tornado.gen.Return(ticket_list[0])
+        else:
+            raise tornado.gen.Return(ticket_list)
 
     def create_ticket(self, sina_text):
         code = sina_text.split('"')[0][-7:-1]
@@ -33,8 +44,12 @@ class SinaApi(object):
         ticket = Ticket()
         ticket.code = code
         ticket.time = info[31]
+        ticket.name = info[0]
+        ticket.change_rate = round(
+                ((float(info[3]) - float(info[2])) / float(info[2])) * 100, 2)
         ticket.volume = int(info[8])
-        ticket.price = float(info[9])
+        ticket.price = float(info[3])
+        ticket.transacation_amount = float(info[9]) / 10000
         ticket.b1_v = int(info[10])
         ticket.b1_p = float(info[11])
         ticket.b2_v = int(info[12])
@@ -55,7 +70,6 @@ class SinaApi(object):
         ticket.a4_p = float(info[27])
         ticket.a5_v = int(info[28])
         ticket.a5_p = float(info[29])
-        ticket.name = info[0]
         return ticket
 
 
